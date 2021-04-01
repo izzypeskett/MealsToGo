@@ -25,6 +25,7 @@ export const RestaurantInfoCard = ({ restaurant = {} }) => {
     isOpenNow = true,
     rating = 4,
     isClosed = true,
+    placeId,
   } = restaurant;
 
   const ratingArray = Array.from(new Array(Math.ceil(rating)));
@@ -36,8 +37,13 @@ export const RestaurantInfoCard = ({ restaurant = {} }) => {
         <Text variant="label">{name}</Text>
         <RowSection>
           <Rating>
-            {ratingArray.map((val, i) => (
-              <SvgXml xml={star} width={20} height={20} key={i} />
+            {ratingArray.map((_, i) => (
+              <SvgXml
+                xml={star}
+                width={20}
+                height={20}
+                key={`star-${placeId}-${i}`}
+              />
             ))}
           </Rating>
           <SectionEnd>
