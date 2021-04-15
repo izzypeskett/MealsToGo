@@ -1,12 +1,15 @@
 import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Text } from "react-native";
+
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
 
+import { FavouritesContextProvider } from "../../services/favourites/favourites.context";
+import { RestaurantsContextProvider } from "../../services/restaurants/restaurants.context";
+import { LocationContextProvider } from "../../services/location/location.context";
 import { RestaurantsNavigator } from "./restaurant.navigation";
-import { SafeArea } from "../../components/utility/safe-area.component";
+import { MapScreen } from "../../features/map/screens/map.screen";
+import { SettingsNavigator } from "./settings.navigation";
 
 const Tab = createBottomTabNavigator();
 const TAB_ICON = {
@@ -14,17 +17,6 @@ const TAB_ICON = {
   Maps: "map",
   Settings: "settings",
 };
-
-const Settings = () => (
-  <SafeArea>
-    <Text>Settings</Text>
-  </SafeArea>
-);
-const Maps = () => (
-  <SafeArea>
-    <Text>Maps</Text>
-  </SafeArea>
-);
 
 const createScreenOptions = ({ route }) => {
   const iconName = TAB_ICON[route.name];
@@ -40,19 +32,22 @@ const createScreenOptions = ({ route }) => {
 
 export const AppNavigator = () => {
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={createScreenOptions}
-        tabBarOptions={{
-          activeTintColor: "tomato",
-          inactiveTintColor: "gray",
-        }}
-      >
-        <Tab.Screen name="Restaurants" component={RestaurantsNavigator} />
-        <Tab.Screen name="Maps" component={Maps} />
-        <Tab.Screen name="Settings" component={Settings} />
-      </Tab.Navigator>
-      <ExpoStatusBar style="auto" />
-    </NavigationContainer>
+    <FavouritesContextProvider>
+      <LocationContextProvider>
+        <RestaurantsContextProvider>
+          <Tab.Navigator
+            screenOptions={createScreenOptions}
+            tabBarOptions={{
+              activeTintColor: "tomato",
+              inactiveTintColor: "gray",
+            }}
+          >
+            <Tab.Screen name="Restaurants" component={RestaurantsNavigator} />
+            <Tab.Screen name="Maps" component={MapScreen} />
+            <Tab.Screen name="Settings" component={SettingsNavigator} />
+          </Tab.Navigator>
+        </RestaurantsContextProvider>
+      </LocationContextProvider>
+    </FavouritesContextProvider>
   );
 };
